@@ -1,6 +1,5 @@
-import { User as _User } from '../models/userSchema.js';
-import { generateToken } from '../services/authentication.js';
-const User = _User;
+import { User } from '../models/userSchema.js';
+// import { generateToken } from '../services/authentication.js';
 
 export async function userLogin(req, res) {
   const { email, password } = req.body;
@@ -10,18 +9,20 @@ export async function userLogin(req, res) {
       error: 'Invalid Username or Password',
     });
   }
-  const token = generateToken(user);
-  return res.json({ token, message: 'Successfully signed in' });
+  // const token = generateToken(user);
+  req.session.authenticated = true;
+  return res.json({ message: 'Successfully signed in',data: user });
 }
 
 export async function register(req, res) {
-  const { id, name, email, password } = req.body;
+  const { email } = req.body;
   try {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'Email already exists' });
     }
-    const newUser = new User({ id, name, email, password });
+    const newUser = new User(req.body);
+    console.log(newUser);
     await newUser.save();
     res
       .status(201)

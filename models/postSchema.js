@@ -2,12 +2,11 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const postSchema = new Schema({
-  id: Number,
-  userId: Number,
+  userId: String,
   title: String,
   description: String,
   image: String,
-  likes: [Number],
+  likes: [String],
   postedBy: String,
 });
 

@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import multer from 'multer';
 import { connect } from 'mongoose';
 import bodyParser from 'body-parser';
+import session from 'express-session';
 import express, { json } from 'express';
 import { router } from './routes/user.js';
 import { router as _router } from './routes/post.js';
@@ -14,6 +15,15 @@ app.use(
     extended: true,
   })
 );
+app.use(express.json());
+app.use(session({
+  secret: process.env.ACCESS_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  // cookie: {
+  //   maxAge: 10000
+  //  }
+}))
 app.use('/users', router);
 app.use('/posts', _router);
 // app.post('/api/uploadFile', upload.single('myFile'), (req, res) => {
@@ -31,3 +41,4 @@ async function main() {
 app.listen(PORT, () => {
   console.log(`Server is running on PORT: ${PORT}`);
 });
+
